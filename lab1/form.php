@@ -1,3 +1,33 @@
+<?php
+
+    if (isset($_GET['errors'])){
+        $errors = json_decode($_GET['errors'], true);
+        extract($errors);  # variable with values --> based on errors
+    }
+    if(isset($_GET['old'])){
+        $old_data = json_decode($_GET['old'], true);
+
+        if(isset($old_data['firstName'])){
+            $old_firstName = $old_data['firstName'];
+        }
+        if(isset($old_data['lastName'])){
+            $old_lastName = $old_data['lastName'];
+        }
+        if(isset($old_data['address'])){
+            $old_address = $old_data['address'];
+        }
+        if(isset($old_data['gender'])){
+          $old_gender = $old_data['gender'];
+      }
+      if(isset($old_data['country'])){
+        $old_country = $old_data['country'];
+    }
+    if(isset($old_data['skill'])){
+      $old_skill = $old_data['skill'];
+  }
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,49 +43,55 @@
         <form action="log.php"  method="post">
             <div class="mb-3">
               <label for="firstName" class="form-label">First name:</label>
-              <input type="text"  name="firstName">
+              <input type="text" value="<?php echo $old_firstName ?? ''; ?>" name="firstName">
+              <p class="text-danger"> <?php echo $firstName ?? '' ?> </p>
             </div>
-            <div class="mb-3">
+            <div class="mb-3 col-6">
                 <label for="lastName" class="form-label">Last name:</label>
-                <input type="text"  name="lastName">
+                <input type="text"  value="<?php echo $old_lastName ?? ''; ?>" name="lastName">
+                <p class="text-danger"> <?php echo $lastName ?? '' ?> </p>
               </div>
               <div class="mb-3">
                 <label for="address" class="form-label">Address:</label>
-                <textarea name="address" id="address"></textarea>
+                <textarea name="address" id="address"><?php echo $old_address ?? ''; ?></textarea>
+                <p class="text-danger"> <?php echo $address?? '' ?> </p>
               </div>
               <div class="mb-3">
                 <label for="country" class="form-label">country:</label>
                 <select name="country" id="country">
                     <option value="">Select a country</option>
-                    <option value="egypt">egypt</option>
-                    <option value="america">america</option>
-                    <option value="german">german</option>
-                    <option value="turkey">turkey</option>
+                    <option value="egypt"  <?php echo (isset($old_country) && $old_country == 'egypt') ? 'selected' : ''; ?>>egypt</option>
+                    <option value="america" <?php echo (isset($old_country) && $old_country == 'america') ? 'selected' : ''; ?>>america</option>
+                    <option value="german <?php echo (isset($old_country) && $old_country == 'german') ? 'selected' : ''; ?>">german</option>
+                    <option value="turkey" <?php echo (isset($old_country) && $old_country == 'turkey') ? 'selected' : ''; ?>>turkey</option>
                 </select>
-                <div class="mb-3">
-                    <label for="gender" class="form-label">Gender:</label>
-                    <input type="radio" name="gender"  value="male"><label for="">Male</label>
-                    <input type="radio"  name="gender" value="female"><label for="">Female</label>
-                  </div>
+                <p class="text-danger"> <?php echo $country ?? '' ?> </p>
+              </div>
+              <div class="mb-3">
+              <label for="gender" class="form-label">Gender:</label>
+              <input type="radio" name="gender" value="male" <?= isset($old_data['gender']) && $old_data['gender'] === 'male' ? 'checked' : '' ?>> Male
+              <input type="radio" name="gender" value="female" <?= isset($old_data['gender']) && $old_data['gender'] === 'female' ? 'checked' : '' ?>> Female
+              <p class="text-danger"> <?= $gender ?? '' ?> </p>
               </div>
               <div class="mb-3">
   <label class="form-label">Skills:</label>
   <div class="form-check form-check-inline">
-    <input class="form-check-input" name="skill[]" type="checkbox" id="php" value="php">
+    <input class="form-check-input" name="skill[]" <?php echo (isset($old_skill) && in_array('php', $old_skill)) ? 'checked' : ''; ?> type="checkbox" id="php" value="php">
     <label class="form-check-label" for="php">PHP</label>
   </div>
   <div class="form-check form-check-inline">
-    <input class="form-check-input" name="skill[]" type="checkbox" id="html" value="html">
+    <input class="form-check-input" name="skill[]" <?php echo (isset($old_skill) && in_array('html', $old_skill)) ? 'checked' : ''; ?> type="checkbox" id="html" value="html">
     <label class="form-check-label" for="html">HTML</label>
   </div>
   <div class="form-check form-check-inline">
-    <input class="form-check-input" name="skill[]" type="checkbox" id="mysql" value="mysql">
+    <input class="form-check-input" name="skill[]" <?php echo (isset($old_skill) && in_array('mysql', $old_skill)) ? 'checked' : ''; ?> type="checkbox" id="mysql" value="mysql">
     <label class="form-check-label" for="mysql">mySQL</label>
   </div>
   <div class="form-check form-check-inline">
-    <input class="form-check-input" name="skill[]" type="checkbox" id="js" value="js">
+    <input class="form-check-input" name="skill[]" <?php echo (isset($old_skill) && in_array('js', $old_skill)) ? 'checked' : ''; ?> type="checkbox" id="js" value="js">
     <label class="form-check-label" for="js">JS</label>
   </div>
+  <p class="text-danger"> <?php echo $skill ?? '' ?> </p>
 </div>
 
               <div class="mb-3">
@@ -68,20 +104,15 @@
             </div>
             <div class="mb-3">
               <label for="department" class="form-label">Department:</label>
-              <input type="text" placeholder="Open Source" name="department" id="department" value="Open source" readonly>
-          </div>
-          <!-- <label for="department">Select Department:</label>
-        <select name="department" id="department">
-            <option value="">Open source</option>
-            <option value="HR">HR</option>
-            <option value="Finance">Finance</option>
-            <option value="IT">IT</option>
-            <option value="Marketing">Marketing</option>
-        </select> -->
+              <input type="text" placeholder="Open Source" value="<?php echo $old_department ?? ''; ?>" name="department" id="department" value="Open source" readonly>
+
+
+            </div>
+   
               <div class="mb-3">
                 <label for="code">Please insert the code in the box below:</label><br><label for="code">P8Q67h</label><br>
 
-                <input type="text" id="code" name="code" required><br><br>
+                <input type="text" id="code" name="code"><br><br>
               </div>
             <button type="submit" class="btn btn-primary">Submit</button>
             <button type="reset" class="btn btn-primary">Reset</button>
